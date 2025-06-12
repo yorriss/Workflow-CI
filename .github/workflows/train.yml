@@ -33,7 +33,12 @@ jobs:
     - name: Get latest MLflow run_id
       id: get_run_id
       run: |
-        RUN_ID=$(find MLProject/mlruns/0 -maxdepth 1 -type d -regex '.*/[a-f0-9]\{32\}' | sort -r | head -n 1 | xargs basename)
+        RUN_PATH=$(find MLProject/mlruns/0 -maxdepth 1 -type d -regextype posix-extended -regex '.*/[a-f0-9]{32}' | sort -r | head -n 1)
+        if [ -z "$RUN_PATH" ]; then
+          echo "No valid MLflow run_id directory found in mlruns/0"
+          exit 1
+        fi
+        RUN_ID=$(basename $RUN_PATH)
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         echo "Latest run_id: $RUN_ID"
