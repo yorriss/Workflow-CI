@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   train:
@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-        pip install mlflow  
+        pip install mlflow
 
     - name: Run MLflow project
       working-directory: MLProject
@@ -33,21 +33,18 @@ jobs:
     - name: Upload all artifacts
       uses: actions/upload-artifact@v4
       with:
-       name: artifacts
-       path: MLProject/artifacts/
+        name: artifacts
+        path: |
+          MLProject/model.pkl
+          MLProject/artifacts/
 
-        
     - name: Commit artifacts to repository
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git fetch origin
-        git checkout main
-        git pull origin main --rebase
+        git pull --rebase origin main
         git add MLProject/model.pkl MLProject/artifacts/
-        git commit -m "Add model and artifacts [CI]" || echo "No changes to commit"
+        git diff --cached --quiet || git commit -m "Add model and artifacts [CI]"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
