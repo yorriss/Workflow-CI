@@ -42,10 +42,17 @@ jobs:
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add MLProject/artifacts/
-        git add -f MLProject/model.pkl
+
+        git fetch origin
+        git checkout main
+        git pull origin main --rebase
+
+        if [ -f MLProject/artifacts/model.pkl ]; then
+          git add MLProject/artifacts/model.pkl
+        fi
+
+        git add MLProject/artifacts/ || echo "No artifacts found"
         git commit -m "Add model and artifacts [CI]" || echo "No changes to commit"
-        git pull --rebase --autostash origin main
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
