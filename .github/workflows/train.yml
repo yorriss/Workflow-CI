@@ -75,9 +75,18 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Build Docker image manually
+    - name: Build Docker image with MLflow
       run: |
-        docker build --build-arg RUN_ID=${{ env.RUN_ID }} -t student-performance MLProject
+        RUN_ID=${{ steps.get_run_id.outputs.run_id }}
+        echo "RUN_ID is $RUN_ID"
+        echo "Checking model path..."
+        ls -R MLProject/mlruns/0/$RUN_ID/artifacts/model || exit 1
+
+        mlflow models build-docker \
+          --model-uri "MLProject/mlruns/0/$RUN_ID/artifacts/model" \
+          --name student-performance
+      env:
+        MLFLOW_TRACKING_URI: file:MLProject/mlruns
 
     - name: Push Docker image to Docker Hub
       run: |
