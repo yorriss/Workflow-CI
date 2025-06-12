@@ -25,8 +25,8 @@ jobs:
       working-directory: MLProject
       run: mlflow run . --env-manager=local
 
-    - name: Upload trained model artifact
-      uses: actions/upload-artifact@v3
+    - name: Upload model artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: trained-model
-        path: Workflow-CI/MLProject/model.pkl
+        name: model
+        path: model.pkl
