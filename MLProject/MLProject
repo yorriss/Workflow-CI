@@ -1,4 +1,4 @@
-name: dropout-prediction
+name: student_scoring
 
 conda_env: conda.yaml
 
@@ -6,4 +6,4 @@ entry_points:
   main:
     parameters:
       data_path: {type: str, default: "students_performance_preprocessing.csv"}
-    command: "python modelling.py --data_path {data_path}"
+    command: "python modelling.py --data-path {data_path}"

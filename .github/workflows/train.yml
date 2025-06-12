@@ -33,38 +33,32 @@ jobs:
     - name: Get latest MLflow run_id
       id: get_run_id
       run: |
-        RUN_PATH=$(find MLProject/mlruns/0 -maxdepth 1 -type d -regextype posix-extended -regex '.*/[a-f0-9]{32}' | sort -r | head -n 1)
+        RUN_PATH=$(find MLProject/mlruns/0 -maxdepth 1 -type d \
+                   -regextype posix-extended -regex '.*/[a-f0-9]{32}' \
+                   | sort -r | head -n 1)
         if [ -z "$RUN_PATH" ]; then
           echo "No valid MLflow run_id directory found in mlruns/0"
           exit 1
         fi
-        RUN_ID=$(basename $RUN_PATH)
+        RUN_ID=$(basename "$RUN_PATH")
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         echo "Latest run_id: $RUN_ID"
 
-    - name: Upload all artifacts
+    - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: artifacts
+        name: mlflow-artifacts
         path: |
           MLProject/artifacts/
-          MLProject/model.pkl
+          MLProject/mlruns/0/${{ env.RUN_ID }}/artifacts/model
 
-    - name: Commit artifacts to repository
+    - name: Commit CI-related changes
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-
-        git fetch origin
-        git checkout main
-
-        git stash --include-untracked
-        git pull origin main --rebase
-        git stash pop || true  
-
-        git add MLProject/artifacts/
-        git commit -m "Add model and artifacts [CI]" || echo "No changes to commit"
+        git add MLProject/MLproject
+        git commit -m "CI: update run_id ${{ env.RUN_ID }}" || echo "No changes"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,13 +69,16 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Build Docker image from custom Dockerfile
+    - name: Build Docker image
       run: |
-        docker build -t student-performance \
-          --build-arg RUN_ID=${{ steps.get_run_id.outputs.run_id }} \
-          -f MLProject/Dockerfile.serve MLProject
+        docker build \
+          --build-arg RUN_ID=${{ env.RUN_ID }} \
+          -f MLProject/Dockerfile.serve \
+          -t ${{ secrets.DOCKER_HUB_USERNAME }}/student-performance:latest \
+          MLProject
 
-    - name: Push Docker image to Docker Hub
-      run: |
-        docker tag student-performance ${{ secrets.DOCKER_HUB_USERNAME }}/student-performance:latest
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/student-performance:latest
+    - name: Push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/student-performance:latest
