@@ -79,7 +79,7 @@ jobs:
       run: |
         docker build -t student-performance \
           --build-arg RUN_ID=${{ steps.get_run_id.outputs.run_id }} \
-          -f MLProject/Dockerfile MLProject
+          -f MLProject/Dockerfile.serve MLProject
 
     - name: Push Docker image to Docker Hub
       run: |
