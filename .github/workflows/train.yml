@@ -37,11 +37,14 @@ jobs:
        path: MLProject/artifacts/
 
         
-    - name: Commit model.pkl to repository
+    - name: Commit artifacts to repository
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git pull origin main
-        git add MLProject/model.pkl
-        git commit -m "Add trained model.pkl [CI]" || echo "No changes to commit"
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+        git pull origin main --rebase
+        git add MLProject/artifacts/
+        git commit -m "Add artifacts [CI]" || echo "No changes to commit"
+        git push origin main
+      env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
