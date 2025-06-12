@@ -16,10 +16,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12.7'
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        pip install -r requirements.txt
+        pip install mlflow  
 
     - name: Run MLflow project
       working-directory: MLProject
@@ -29,4 +31,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: model
-        path: model.pkl
+        path: MLProject/model.pkl
