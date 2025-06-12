@@ -78,8 +78,7 @@ jobs:
 
         mlflow models build-docker \
           --model-uri "runs:/${{ env.RUN_ID }}/model" \
-          --name student-performance \
-          --build-image python:3.12-slim
+          --name student-performance
       env:
         MLFLOW_TRACKING_URI: file:MLProject/mlruns
 
