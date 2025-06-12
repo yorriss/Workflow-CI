@@ -42,9 +42,10 @@ with mlflow.start_run():
     # Logging metrik eksplisit
     mlflow.log_metric("mse", mse)
 
-    # Simpan model ke file di direktori saat ini (MLProject)
-    model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
+    # Simpan model ke direktori file ini (MLProject/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))  # direktori script ini
+    model_path = os.path.join(script_dir, "model.pkl")
     joblib.dump(model, model_path)
 
-    # Upload model ke MLflow artifact juga
+    # Log juga ke MLflow
     mlflow.log_artifact(model_path)
