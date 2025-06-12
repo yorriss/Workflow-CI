@@ -45,14 +45,16 @@ jobs:
 
         git fetch origin
         git checkout main
+
+       
+        git stash --include-untracked
         git pull origin main --rebase
+        git stash pop || true  
 
-        if [ -f MLProject/artifacts/model.pkl ]; then
-          git add MLProject/artifacts/model.pkl
-        fi
-
-        git add MLProject/artifacts/ || echo "No artifacts found"
+        # Tambahkan file yang baru
+        git add MLProject/artifacts/
         git commit -m "Add model and artifacts [CI]" || echo "No changes to commit"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
