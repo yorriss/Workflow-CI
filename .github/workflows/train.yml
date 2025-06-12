@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write 
+
 jobs:
   train:
     runs-on: ubuntu-latest
@@ -39,7 +42,5 @@ jobs:
         git config user.email "github-actions@github.com"
         git pull origin main
         git add MLProject/model.pkl
-        git commit -m "Add trained model.pkl [CI]"
-        git push origin main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git commit -m "Add trained model.pkl [CI]" || echo "No changes to commit"
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
