@@ -85,7 +85,9 @@ def main(data_path: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train and log RandomForest model with MLflow")
     parser.add_argument(
-        "--data_path", type=str,
+        "--data_path", "--data-path",
+        dest="data_path",
+        type=str,
         default="students_performance_preprocessing.csv",
         help="Path to preprocessed CSV dataset"
     )
