@@ -4,4 +4,4 @@ WORKDIR /app
 
 RUN pip install mlflow
 
-CMD mlflow models serve -m "runs:/f5c77a366573403bb706e6cb96c3078e/model" --no-conda --host 0.0.0.0 --port 5000
+CMD mlflow models serve -m "runs:/ca3e2b614f994f449e26823ef48c0a6f/model" --no-conda --host 0.0.0.0 --port 5000
