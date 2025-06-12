@@ -4,5 +4,5 @@ WORKDIR /app
 
 RUN pip install mlflow
 
-# Jalankan MLflow serve langsung dari DagsHub
-CMD mlflow models serve -m "models:/student-performance/Production" --no-conda --host 0.0.0.0 --port 5000
+# Jalankan model langsung dari DagsHub (sesuaikan jika perlu)
+CMD mlflow models serve -m "runs:/f5c77a366573403bb706e6cb96c3078e/model" --no-conda --host 0.0.0.0 --port 5000
