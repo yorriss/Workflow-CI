@@ -1,0 +1,33 @@
+name: Preprocessing Automation
+
+on:
+  push:
+    branches:
+      - main  # Ganti jika branch utama Anda berbeda
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt || echo "No requirements.txt file found."
+
+    - name: Run preprocessing script
+      run: |
+        python preprocessing/automate_Yorris_Siagian.py
+
+    - name: Upload processed dataset as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: students-performance-preprocessed
+        path: preprocessing/students_performance_preprocessing.csv
