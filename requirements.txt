@@ -3,3 +3,6 @@ numpy
 scikit-learn
 mlflow==2.12.1
 setuptools
+seaborn
+joblib
+matplotlib
