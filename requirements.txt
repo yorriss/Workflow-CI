@@ -1,5 +1,5 @@
 pandas
 numpy
-scikit-learn==1.5.0
+scikit-learn
 mlflow==2.12.1
-joblib
+setuptools
