@@ -1,7 +1,18 @@
+# Gunakan base image Python
 FROM python:3.12-slim
 
+# Set working directory
 WORKDIR /app
 
-RUN pip install mlflow
+# Salin environment dan install
+COPY conda.yaml .
+RUN pip install mlflow scikit-learn pandas
 
-CMD mlflow models serve -m "runs:/ca3e2b614f994f449e26823ef48c0a6f/model" --no-conda --host 0.0.0.0 --port 5000
+# Salin artefak model yang sudah di-log MLflow
+COPY artifacts/model /app/model
+
+# Expose port MLflow serving
+EXPOSE 1234
+
+# Jalankan MLflow serve dari folder model lokal
+CMD ["mlflow", "models", "serve", "-m", "model", "-p", "1234", "--no-conda"]
