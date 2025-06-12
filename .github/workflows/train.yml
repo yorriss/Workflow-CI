@@ -84,7 +84,8 @@ jobs:
 
         mlflow models build-docker \
           --model-uri "MLProject/mlruns/0/$RUN_ID/artifacts/model" \
-          --name student-performance
+          --name student-performance \
+          --enable-mlserver
       env:
         MLFLOW_TRACKING_URI: file:MLProject/mlruns
 
